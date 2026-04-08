@@ -941,7 +941,7 @@ export interface IOpenClawAgent {
   id: string;
   name: string;
   avatarUrl: string;
-  senderId: string;
+  collabUserId: string; // collabMessages user id
   createdAt: string;
 }
 
