@@ -12,6 +12,7 @@ export enum HttpStatus {
   NOT_IMPLEMENTED = 501
 }
 
+
 export interface RequestBase {
   action: string;
 }
@@ -499,6 +500,7 @@ export interface Thread {
   avatar_url: string;
   bots?: ThreadBot[];
   integrations?: ThreadIntegration[];
+  openClawAgents?: OpenClawAgentBinding[]
   archivedAt?: string; // compact UTC format `yyyyMMddHHmmss` when this thread was archived
   archivedBy?: string;
   deletedAt?: string; // compact UTC format `yyyyMMddHHmmss` when this thread was deleted
@@ -947,10 +949,12 @@ export interface IOpenClawIntegration {
   id: string;
   name: string;
   url: string;
+  connectorId: string;
   bearerToken: string;
   agents: IOpenClawAgent[];
   createdAt: string;
 }
+
 
 export interface ToolsBeforeSendMessage {
   toolName: string;
@@ -1008,6 +1012,8 @@ export interface OpenClawConnector {
   enabled: boolean;
   defaultTimeoutMs: number;
   defaultOutputMode: OpenClawOutputMode;
+  protocolVersion?: number,
+  transport?: string,
 }
 
 export interface RequestAddOrUpdateThreadOpenClawAgent extends RequestBase {
@@ -1059,4 +1065,63 @@ export interface OpenClawAgentBinding {
   sessionMode?: OpenClawSessionMode;
   handoffThreadRole?: OpenClawHandoffThreadRole;
   defaultForThread?: boolean;
+}
+
+export interface OpenClawRemoteAgentSummary {
+  id: string;
+  name?: string;
+  identity?: {
+    name?: string;
+    theme?: string;
+    emoji?: string;
+    avatar?: string;
+    avatarUrl?: string;
+  };
+  workspace?: string;
+  model?: {
+    primary?: string;
+    fallbacks?: string[];
+  };
+}
+
+export interface RequestListOpenClawConnectors extends RequestBase {
+  action: "listOpenClawConnectors";
+  userId: string;
+}
+
+export interface ResponseListOpenClawConnectors extends ResponseBase {
+  connectors: OpenClawConnector[];
+}
+
+export interface RequestListOpenClawAvailableAgents extends RequestBase {
+  action: "listOpenClawAvailableAgents";
+  userId: string;
+  connectorId: string;
+}
+
+export interface ResponseListOpenClawAvailableAgents extends ResponseBase {
+  connectorId: string;
+  defaultId: string;
+  mainKey: string;
+  scope: "per-sender" | "global";
+  agents: OpenClawRemoteAgentSummary[];
+}
+
+export interface RequestCreateOpenClawAgent extends RequestBase {
+  action: "createOpenClawAgent";
+  userId: string;
+  connectorId: string;
+  name: string;
+  workspace: string;
+  emoji?: string;
+  avatar?: string;
+  soulMd?: string;
+  identityMd?: string;
+  identifyMd?: string;
+}
+
+export interface ResponseCreateOpenClawAgent extends ResponseBase {
+  connectorId: string;
+  agent: OpenClawRemoteAgentSummary;
+  collabUserId: string;
 }
