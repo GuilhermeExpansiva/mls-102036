@@ -1130,3 +1130,18 @@ export interface ResponseCreateOpenClawAgent extends ResponseBase {
   agent: OpenClawRemoteAgentSummary;
   collabUserId: string;
 }
+
+export interface RequestDeleteOpenClawAgent extends RequestBase {
+  action: "deleteOpenClawAgent";
+  userId: string;
+  connectorId: string;
+  agentId: string;
+  deleteFiles?: boolean;
+}
+
+export interface ResponseDeleteOpenClawAgent extends ResponseBase {
+  connectorId: string;
+  agentId: string;
+  collabUserId?: string;
+  updatedThreadIds: string[];
+}
